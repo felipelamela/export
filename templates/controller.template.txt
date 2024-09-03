@@ -1,0 +1,62 @@
+import { Controller, Get, Post, Body, Put, Param, Delete, UsePipes, ValidationPipe, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { {{name}}Service } from './{{name-lower}}.service';
+import { Create{{name}}Dto } from './dto/create-{{name-lower}}.dto';
+import { Update{{name}}Dto } from './dto/update-{{name-lower}}.dto';
+import { createResponse } from '../../common/utils/response.utils';
+
+@Controller('{{name-lower}}')
+export class {{name}}Controller {
+  constructor(private readonly {{name-lower}}Service: {{name}}Service) {}
+
+  @Post()
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async create(@Body() create{{name}}Dto: Create{{name}}Dto) {
+    try {
+      const data = await this.{{name-lower}}Service.create(create{{name}}Dto);
+      return createResponse(200, true, 'Sucesso', data);
+    } catch (error) {
+      return createResponse(404, false, 'Erro ao criar o registro.', {message:error.message});
+    }
+  }
+ 
+  @Get()
+  async findAll() {
+    try {
+      const data = await this.{{name-lower}}Service.findAll();
+      return createResponse(200, true, 'Sucesso', data);
+    } catch (error) {
+      return createResponse(404, false, 'Erro ao recuperar os registros.', {message:error.message});
+    }
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    try {
+      const data = await this.{{name-lower}}Service.findOne(+id);
+      return createResponse(200, true, 'Sucesso', data);
+    } catch (error) {
+      return createResponse(404, false, 'Erro ao recuperar o registro.', {message:error.message});
+    }
+  }
+
+  @Put(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async update(@Param('id') id: string, @Body() update{{name}}Dto: Update{{name}}Dto) {
+    try {
+      const data = await this.{{name-lower}}Service.update(+id, update{{name}}Dto);
+      return createResponse(200, true, 'Sucesso', data);
+    } catch (error) {
+      return createResponse(404, false, 'Erro ao atualizar o registro.', {message:error.message});
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    try {
+      await this.{{name-lower}}Service.remove(+id);
+      return createResponse(200, true, 'Registro removido com sucesso.', {});
+    } catch (error) {
+      return createResponse(404, false, 'Erro ao remover o registro.', {message:error.message});
+    }
+  }
+}
